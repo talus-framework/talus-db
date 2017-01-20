@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "running a temporary db container (talus-db) for a mongo shell"
+
+sudo docker kill talus-db_shell
+sudo docker rm talus-db_shell
+
+echo "RUNNING $1 in mongo shell"
+
+sudo docker run \
+	--rm \
+	--link talus-db:talus-db \
+	--name talus-db_shell \
+	-v $(dirname $1):/scripts \
+	-it \
+	--entrypoint mongo \
+	talus-db \
+		--host talus-db \
+		--quiet \
+		talus \
+		/scripts/$(basename $1)
