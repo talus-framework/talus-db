@@ -13,6 +13,9 @@ for more details.
 
 # Installation
 Download or git clone the talus-db repository.
+```
 cd talus-db/bin
 ./install
+```
 
+Log files can be found at /var/log/talus/mongodb
