@@ -19,3 +19,7 @@ cd talus-db/bin
 ```
 
 Log files can be found at /var/log/talus/mongodb
+
+
+We have published a talus-db docker container here:
+https://hub.docker.com/r/talus/talus-db/
