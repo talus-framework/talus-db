@@ -12,6 +12,7 @@ sudo docker run \
 	--rm \
 	-v /var/log/talus:/talus/logs \
 	-v /talus/data:/talus/data \
+	--net talus_default \
 	--name talus-db \
 	--hostname talus-db \
 	-p 27017:27017 \

@@ -1,28 +1,10 @@
 #!/bin/bash
 
-if [ ! -e "/usr/bin/docker" ]; then
-        echo "[+] installing docker"
-        wget -qO- https://get.docker.com/ | sh
-        sudo usermod -aG docker $(whoami)
-        echo "[+] done installing docker"
-fi
-
-if docker images | grep -q 'talus-db'; then
-	echo "[+] talus-db docker mongodb container already installed"
-	echo "If you want to rebuild this container, perform docker rmi talus-db"
-else
-	echo "[+] installing talus-db docker mongodb container"
-	docker pull talus/talus-db
-fi
-
 sudo mkdir -p /talus/data
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-$DIR/build
-
 if [[ `systemctl` =~ -\.mount ]]; then
-
 echo "Installing talus-db as systemd service"
 cat << EOF | sudo tee /etc/systemd/system/docker.talus-db.service > /dev/null
 [Unit]
@@ -39,14 +21,12 @@ ExecStop=$(readlink -f $DIR)/stop
 [Install]
 WantedBy=default.target
 EOF
-sudo systemctl enable docker.talus-db
 sudo chmod 664 /etc/systemd/system/docker.talus-db.service
 sudo systemctl daemon-reload
-sudo systemctl start docker.talus-db
-sudo systemctl enable docker.talus-db
+sudo systemctl enable docker.talus-db.service
+sudo systemctl start docker.talus-db.service
 
 else
-
 cat << EOF | sudo tee /etc/init/talus-amqp.conf > /dev/null
 description "Talus AMQP"
 author		"Optiv Labs"
@@ -59,7 +39,5 @@ script
    $(readlink -f $DIR)/start
 end script
 EOF
-
-sudo start talus-db
 
 fi
